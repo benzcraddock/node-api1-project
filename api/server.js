@@ -59,6 +59,33 @@ server.post('/api/users', (req, res) => {
   }
 })
 
-// 
+// PUT USER endpoint
+server.put('/api/users/:id', async (req, res) => {
+  let { id } = req.params
+  try {
+    let userId = await userModel.findById(id)
+    if(!userId) {
+      res.status(404).json({
+        message: 'The user with the specified ID does not exist'
+      })
+      return
+    }
+    let user = req.body
+    if(!user.name || !user.bio) {
+      res.status(400).json({
+        message: 'Please provide name and bio for the user'
+      })
+      return
+    } else {
+      let updatedUser = await userModel.update(id, user)
+      res.status(200).json(updatedUser)
+    }
+  }
+  catch(err) {
+    res.status(500).json({
+      message: 'The user information could not be modified'
+    })
+  }
+})
 
 module.exports = server
