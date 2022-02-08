@@ -39,5 +39,26 @@ server.get('/api/users/:id', (req, res) => {
     })
 })
 
+// POST USER endpoint
+server.post('/api/users', (req, res) => {
+  let user = req.body // do not destructure!
+  if(!user.name || !user.bio) {
+    res.status(400).json({
+      message: 'Please provide name and bio for the user'
+    })
+  } else {
+    userModel.insert(user)
+      .then(newUser => {
+        res.status(201).json(newUser)
+      })
+      .catch(() => {
+        res.status(500).json({
+          message: 'There was an error while saving the user to the database'
+        })
+      })
+  }
+})
+
+// 
 
 module.exports = server
